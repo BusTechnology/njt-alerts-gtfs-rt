@@ -119,12 +119,22 @@ public class AlertBuilder {
 	public AlertBuilder assignHeaderText(String titleXmlTagName, TagContentParser parser) {
 		if (this.endpoint != null && this.endpoint.contains("Rail")) {
 			List<GtfsRelationalDaoImpl> daos = gtfsLib.getDao("NJT");
-			if(daos != null)
-				for(GtfsRelationalDaoImpl dao : daos) 
-					for (Agency agency : dao.getAllAgencies()) 
-						for (Route route: dao.getRoutesForAgency(agency)) 
-							if(alert.getRouteId() != null && alert.getRouteId().equals(route.getId())) 
+			if(daos != null) {
+				for(GtfsRelationalDaoImpl dao : daos) {
+					for (Agency agency : dao.getAllAgencies()) {
+						for (Route route: dao.getRoutesForAgency(agency)) {
+							if(alert.getRouteId() != null && alert.getRouteId().equals(route.getId())) {
 								alert.setAlertHeaderText(route.getLongName());
+								break;
+							}
+						}
+						if (alert.getAlertHeaderText() != null)
+							break;  // out of the inner loop
+					}
+					if (alert.getAlertHeaderText() != null)
+						break;  // out of the inner loop
+				}
+			}
 		}
 		
 		else {
@@ -292,12 +302,22 @@ public class AlertBuilder {
 	public AlertBuilder assignInformedEntity() {
 		if (alert.getRouteId() == null) {
 			List<GtfsRelationalDaoImpl> daos = gtfsLib.getDao("NJB");
-			if(daos != null)
-				for(GtfsRelationalDaoImpl dao : daos) 
-					for (Agency agency : dao.getAllAgencies())
-						for (Route route: dao.getRoutesForAgency(agency))
-							if(alert.getRouteShortname() != null && alert.getRouteShortname().equals(route.getShortName())) 
+			if(daos != null) {
+				for(GtfsRelationalDaoImpl dao : daos) {
+					for (Agency agency : dao.getAllAgencies()) {
+						for (Route route: dao.getRoutesForAgency(agency)) {
+							if(alert.getRouteShortname() != null && alert.getRouteShortname().equals(route.getShortName())) { 
 								alert.setRouteId(route.getId().toString());
+								break;
+							}
+						}
+						if (alert.getRouteId() != null)
+							break; // get out of the inner loop
+					}
+					if (alert.getRouteId() != null)
+						break; // get out of the inner loop
+				}
+			}
 		}
 		
 		if (alert.getRouteId() != null)  {
