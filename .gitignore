@@ -1,0 +1,8 @@
+default.env
+build/
+.gradle/
+*.class
+.classpath
+.project
+.settings/
+.springBeans
